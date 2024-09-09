@@ -1,0 +1,109 @@
+PROJECT_NAME: "CHRISTIAN/test_classification" # the path in clearml
+
+DATA:
+  TRAIN_DATASET_PARAMETERS:
+      IMAGE_ROOT: /data/ubuntu/Face_classification/data/images
+      LABELS_PATH: /data/ubuntu/Face_classification/data/im_name2label_train_balanced.json
+      DATASET_MEAN: [0, 0, 0]
+      DATASET_STD: [1, 1, 1]
+      IMAGE_SIZE:  Null
+  VAL_DATASET_PARAMETERS:
+      IMAGE_ROOT: /data/ubuntu/Face_classification/data/images
+      LABELS_PATH: /data/ubuntu/Face_classification/data/im_name2label_val.json
+      DATASET_MEAN: [0, 0, 0]
+      DATASET_STD: [1, 1, 1]
+      IMAGE_SIZE:  Null
+  NUM_CLASSES: 2
+  BATCH_SIZE: 16
+  DROP_LAST: False
+  CLASSES:
+    "class 0": 0
+    "class 1": 1
+
+
+AUGMENTATIONS:
+  AFFINE:
+    scale: [0.9, 1.1]
+    translate_percent: [-0.05, 0.05]
+    rotate: [-15, 15]
+    shear: [-5, 5]
+    p: 0.75
+  RANDOM_BRIGHTNESS_CONTRAST:
+    brightness_limit: 0.2
+    contrast_limit: 0.2
+    p: 0.75
+
+MODEL:
+  NAME: "resnet"
+  PARAMETERS:
+    backbone: "mobilenet_v2"
+    output_classes: 2
+
+TRAINING:
+  MAX_EPOCHS: 50
+  SCHEDULER:
+    USE: False
+    NAME: "CosineAnnealingLR"
+    PARAMETERS:
+      T_max: 10
+
+  OPTIMIZER:
+    NAME: "Adam"
+    PARAMETERS:
+      LR: 0.001
+
+  LOSS:
+    NAME: "cross_entropy"
+    PARAMETERS:
+
+  FINAL_EVAL: False
+
+EVALUATION:
+  METRICS:
+    - NAME: "accuracy"
+      DISPLAY_NAME: "Global Accuracy"
+      PARAMETERS:
+        task: multiclass
+        num_classes: 2
+
+    - NAME: "accuracy"
+      DISPLAY_NAME: "Class Accuracy"
+      PARAMETERS:
+        task: multiclass
+        num_classes: 2
+        average: null
+
+    - NAME: "precision"
+      DISPLAY_NAME: "Global Precision"
+      PARAMETERS:
+        task: multiclass
+        num_classes: 2
+
+    - NAME: "precision"
+      DISPLAY_NAME: "Class Precision"
+      PARAMETERS:
+        task: multiclass
+        num_classes: 2
+        average: null
+
+    - NAME: "recall"
+      DISPLAY_NAME: "Global Recall"
+      PARAMETERS:
+        task: multiclass
+        num_classes: 2
+
+    - NAME: "recall"
+      DISPLAY_NAME: "Class Recall"
+      PARAMETERS:
+        task: multiclass
+        num_classes: 2
+        average: null
+
+  MAIN_METRIC: "Global Accuracy"
+  MINIMIZE_MAIN_METRIC: False
+
+UTILS:
+  NUM_WORKERS: 4
+  ENABLE_TENSORBOARD: True
+  LOGGING_ITERATION_FREQ: 10
+  EVAL_EPOCH_FREQ: 1
