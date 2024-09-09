@@ -1,2 +1,2 @@
 # Face_classification
-This is a binary classification  task for human faces
+This is a binary classification  task for human faces. 
